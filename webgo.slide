@@ -167,8 +167,22 @@ Methods
 Link to [[https://golang.org/src/net/http/server.go#L1883][Serve]] method
 
 * Example (official version)
+
 From [[https://godoc.org/net/http#ListenAndServe]]
-.code examples/helloweb/helloweb.go
+
+    package main
+
+    import "io"
+    import "net/http"
+
+    func HelloGoLab(w http.ResponseWriter, r *http.Request) {
+        io.WriteString(w, "Hello GoLab!\n")
+    }
+
+    func main() {
+        http.HandleFunc("/hello", HelloGoLab) //HandlerFunc(HelloGoLab) and attach to DefaultServeMux
+        http.ListenAndServe(":8000", nil)     //New server around DefaultServeMux if 2nd param is nil
+    }
 
 Thanks to
 [[https://golang.org/src/net/http/server.go#L1418][http.HandlerFunc]] type
