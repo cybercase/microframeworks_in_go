@@ -311,13 +311,13 @@ Or
 
 Source from [[https://github.com/NYTimes/gziphandler]]
 
-.code ../../github.com/nytimes/gziphandler/gzip.go /^func GzipHandler/,/^}/
+.code examples/extra/gzip.go /^func GzipHandler/,/^}/
 
 * Example: GZipMiddleware (2)
 
-.code ../../github.com/nytimes/gziphandler/gzip.go /^type GzipResponseWriter/,/^}/
+.code examples/extra/gzip.go /^type GzipResponseWriter/,/^}/
 
-.code ../../github.com/nytimes/gziphandler/gzip.go /^func \(gzw/,/^}/
+.code examples/extra/gzip.go /^func \(gzw/,/^}/
 
 - `ResponseWriter` is replaced with `GzipResponseWriter`
 - GZipMiddleware: Same `http.Handler` interface but new functionality.
@@ -326,8 +326,8 @@ Source from [[https://github.com/NYTimes/gziphandler]]
 * Negroni Middlewares (1)
 - Library to manage middlewares
 
-.code ../../github.com/codegangsta/negroni/logger.go /^func NewLogger/,/^}/
-.code ../../github.com/codegangsta/negroni/logger.go /^func \(l \*Logger\)/,/^}/
+.code examples/extra/logger.go /^func NewLogger/,/^}/
+.code examples/extra/logger.go /^func \(l \*Logger\)/,/^}/
 
 * Negroni Middlewares (2)
 - Support for `net/http` Handlers
