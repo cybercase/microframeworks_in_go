@@ -1,0 +1,61 @@
+net/http
+- Summary about http (just 3 point about the package)
+- base example slide (with reference to https://golang.org/doc/articles/wiki/)
+    - Explaing the program flow
+- Concepts (slide for each concept?)
+    - Handler Interface (slides about req & resp)
+    - Mutex
+    - Server
+- Extended Examples (which exposes all the base concepts)... also handlerfunc! emphasize on the fact that functions can have methods too!
+- Handler Interface overview
+    - ResponseWriter interface
+    - Request struct
+- ending
+    - This is all you need to build your http server
+    - Look into net/http for other helper functions
+
+
+Microframeworks and patterns (interface augmentation)
+- helps to solve common (tedious) problem while developing a web app
+    - Advenced routing
+    - Middlewares
+    - Request context
+(show the long list?)
+Many are libraries for creating restful api: go-rest, go-json-rest, go-relax, go-restful, goat (just_extend)
+Custom interface: gocraft, mango
+
+- Routing
+- Problem
+- Classic solution
+- Advanced solutions
+    - gorilla (bone, zeus)  // single var  (used by docker and mentioned by google in several occasions)
+    - pat  // trick
+    - httprouter (go-rest, echo, goji) // modify or extend Handler interface
+
+- Middleware
+- Problem (Logging)
+- Classic solutions
+- Advanced solutions
+    - httprouter
+    - negroni
+
+- Request Context
+- Problem
+- Classic solution
+- Advanced solutions
+    - goji ? (or any other library providing context as extra/only parameter for handlers)
+    - gorilla context
+    - Context from standard library?
+
+App context
+    - global variables
+    - dependency injection
+    - method functions
+    - using the request context
+
+
+Testing
+    - Handler testing? (unit test)
+    - Integration testing 
+    - spawn new process trick for profiling
+

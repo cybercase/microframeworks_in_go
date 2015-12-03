@@ -1,0 +1,452 @@
+Web Microframeworks in Go
+Leveraging the net/http package @ GoLab.io
+4 Dec 2015
+Tags: golang, web, http, middleware
+
+Stefano Brilli
+
+
+stefano@brilli.me
+http://stefano.brilli.me
+@thecybercase
+
+* About me
+- Passionate computer programmer
+- Write code for [[https://it.linkedin.com/in/stefano-brilli-95365021][living]]
+- Write code for [[https://github.com/cybercase][fun]]
+
+* About this talk
+
+
+* Intro
+
+- Started Go-ing just before 1.4 was released.
+- At the time I was in charge of a new Python/Django project.
+- Concerned about scaling the web API.
+- Decided to explore other languages/solutions.
+- Was about to jump into Erlang.
+- Eventually I went for Go.
+
+So I'm here to share my learnings.
+
+# So the point of this talk is to share my learning.
+
+
+
+#- At the time I was writing a web app in python using Django.
+#- Django is an awsome framework (because with few work you can model an prototype your idea).
+#- Problems come up when you need to scale your web service to handle a lot users concurrently.
+#- wsgi is limited. It's synchronous, and requires 1 thread for active connection.
+#- So tried other libraries (twisted, and tornado).
+#- but other exisiting libraries were not really though to be used asynchronously (psycopg and redis).
+#- the mechanism to do async programming felt a bit _hackish_. New asyncio module was not diffused.
+#- Decided to explore other languages/solutions
+#- Was about to start learning Erlang (Whatsapp was just acquired from FB and I heard the story about 2M simultaneous connections [http://www.erlang-factory.com/upload/presentations/558/efsf2012-whatsapp-scaling.pdf])
+#- Then I found go
+
+* So, what's the topic?
+
+Overview of Web Programming in Go.
+
+- The *net/http* package.
+- Microframeworks and libraries
+- Testing.
+
+#* ... And what's not
+#
+#Full featured frameworks like
+#
+#- [[https://revel.github.io/][Revel]]
+#- [[http://beego.me/][Beego]]
+
+
+* Disclaimer
+
+- I'm still learning.
+- If you do not understand something just raise your hand.
+- I'm taking questions at the end.
+
+* The net/http package
+
+* The net/http package
+#The core of the web programming in Go is about the net/http package.
+#net/http is the package from the standard library that will let you start doing web programming really quickly.
+
+It's the best place to start.
+
+- included in the standard library
+- provides an HTTP *server* implementation
+- production ready
+- exports some really useful Structs, Interfaces, and functions
+
+* Basic Concepts
+
+*Handler*
+
+- Contains our code to serve incoming requests
+- Implements the `Handler` Interface
+    
+    type Handler interface {
+        ServeHTTP(ResponseWriter, *Request)
+    }
+
+*Multiplexer*
+
+- Matches the incoming request to one of the handlers.
+
+*Server*
+
+- Launch a Goroutine to serve each incoming request.
+
+* Example
+.code examples/helloweblong/helloweblong.go
+
+
+* http.Handler Interface
+# It's the interface to use to implement our own request handling.
+
+    type Handler interface {
+        ServeHTTP(ResponseWriter, *Request)
+    }
+
+- ResponseWriter
+
+    type ResponseWriter interface {
+        Header() Header  // Get the Header map. Defined as map[string][]string
+        Write([]byte) (int, error)  // Reply body
+        WriteHeader(int)  // Status code
+    }
+
+- Request
+
+    type Request struct {
+        Method string  // GET, POST, PUT, ...
+        URL *url.URL  // Requested URL from client
+        Body io.ReadCloser  // Request body
+        Header Header  // Headers as map[string][]string
+        ...
+    }
+
+
+* http.ServeMux Struct
+
+Methods
+
+    func (*ServeMux) Handle(pattern string, handler Handler)
+    func (*ServeMux) HandleFunc(pattern string, handler func(ResponseWriter, *Request))
+
+
+    func (*ServeMux) Handler(r *Request) (h Handler, pattern string)
+
+    // Implements the http.Handler interface
+    func (*ServeMux) ServeHTTP(w ResponseWriter, r *Request)
+
+#Note about `HandleFunc`
+#    
+#    type HandlerFunc func(ResponseWriter, *Request)
+#
+#    func (f HandlerFunc) ServeHTTP(w ResponseWriter, r *Request) {
+#        f(w, r)
+#    }
+
+* Server Struct
+
+    type Server struct {
+        Addr           string        // TCP address to listen on, ":http" if empty
+        Handler        Handler       // handler to invoke, http.DefaultServeMux if nil
+        TLSConfig      *tls.Config   // optional TLS config, used by ListenAndServeTLS
+        ...
+    }
+
+Methods
+
+    func (srv *Server) ListenAndServe() error
+    func (srv *Server) ListenAndServeTLS(certFile, keyFile string) error
+    func (srv *Server) Serve(l net.Listener) error
+
+Link to [[https://golang.org/src/net/http/server.go#L1883][Serve]] method
+
+* Example (official version)
+From [[https://godoc.org/net/http#ListenAndServe]]
+.code examples/helloweb/helloweb.go
+
+Thanks to
+[[https://golang.org/src/net/http/server.go#L1418][http.HandlerFunc]] type
+[[https://golang.org/src/net/http/server.go#L1743][http.HandleFunc]] function
+[[https://golang.org/src/net/http/server.go#L1965][http.ListenAndServe]] function
+
+* Summary
+
+- Handler Interface
+- Multiplexer
+- Server
+- net/http utility functions
+
+
+* Microframeworks and libraries
+
+* Some web microframeworks and libraries (1)
+
+- pat - Sinatra style pattern muxer for Go’s net/http library, by the author of Sinatra.
+- httprouter - A high performance router. Use this and the standard http handlers to form a very high performance web framework.
+- Gorilla - Gorilla is a web toolkit for the Go programming language.
+- Goji - Goji is a minimalistic web framework for Golang that's high in antioxidants.
+- gocraft/web - A mux and middleware package in Go.
+- Bone - Lightning Fast HTTP Multiplexer.
+- ...
+
+* Some web microframeworks and libraries (2)
+
+- zeus - A very simple and fast HTTP router for Go.
+- Echo - A fast HTTP router (zero memory allocation) and micro web framework in Go.
+- go-json-rest - A quick and easy way to setup a RESTful JSON API
+- go-relax - A framework of pluggable components to build RESTful API's
+- go-rest - A small and evil REST framework for Go
+- Gin - Gin is a web framework written in Go! It features a martini-like API with much better performance, up to 40 times faster.
+- ...
+
+* Some Web Microframeworks for Go (3)
+
+- [[https://github.com/avelino/awesome-go#web-frameworks][Full List 1]]
+- [[https://go.zeef.com/zeefcom][Full List 2]]
+- ...
+
+* Microframeworks
+
+May focus more on one or another aspect.
+
+Everyone address common tasks like:
+
+- Dynamic routing
+- Middlewares
+- Handling request context
+
+* Dynamic routing
+
+`http.ServeMux` does not extract params for URLs.
+
+    /api/v1/resource/:id
+
+How to expose route params to our Handler?
+
+- Global var
+- Custom Handler Interface
+- http.Request patching
+
+* gorilla/mux
+
+.code examples/gorillamuxparams/gorillamuxparams.go /START OMIT/,/END OMIT/
+
+- Retrieved via `mux.Vars` function
+- Params stored in a Global Variable. Requires a Lock
+- `http.Handler` compliancy
+
+#Rely on [[http://www.gorillatoolkit.org/pkg/context][Gorilla Context]]: [[https://github.com/gorilla/context/blob/master/context.go][source]]
+#Routing plus a set of middlewares
+#Flexible, used min many projects (docker)
+#Global var to retrieve params (mux.Vars)
+#Access to Global var need to be protected by a mutex
+#allow route nesting
+
+* julienschmidt/httprouter
+
+.code examples/httprouterparams/httprouterparams.go /START OMIT/,/END OMIT/
+
+- Params received thanks to the extended ServeHTTP method
+- Params stored in a per-request variable.
+- Lost `http.Handler` compliancy
+
+#Just a router
+#Among the fastest
+#Used in other microframeworks more focused on middlewares (gin)
+#Tree parsing
+#Standard + Custom Handler Interface
+
+* bmizerany/pat
+.code examples/patparams/patparams.go /START OMIT/,/END OMIT/
+
+- Params encoded as part of the URL
+- Same _trick_ used in [[https://godoc.org/net/http#StripPrefix][http.StripPrefix]]
+- Params stored in a per-request variable.
+- `http.Handler` compliancy
+
+
+#Pat use a custom parsing routinr
+#Example of how to retrieve parameters from a Pat handlers.
+#Show the source code trick
+
+
+* Middlewares
+
+- Run some code before and after the request Handler
+- Reusable
+- Chainable
+
+Typical middleware signature
+
+    func Middleware(var1, var2, ..., Handler) Handler {}
+
+* Example: Logging Middleware
+
+    func LogMiddleware(l *log.Logger, h Handler) Handler {
+        return HandlerFunc(func (w http.ResponseWriter, r *http.Request) {
+            l.Println("Incoming request from", r.RemoteAddr)
+            h.ServeHTTP(w, r)
+            l.Println("Request served", r.RemoteAddr)
+        })
+    }
+
+Then
+
+    // Run on every path
+    http.ListenAndServe(":8000", LogMiddleware(mux))
+
+Or
+
+    // Run on /login path
+    http.HandleFunc('/login', LogMiddleware(LoginHandler))
+
+
+* Example: GZipMiddleware (1)
+
+Source from [[https://github.com/NYTimes/gziphandler]]
+
+.code ../../github.com/nytimes/gziphandler/gzip.go /^func GzipHandler/,/^}/
+
+* Example: GZipMiddleware (2)
+
+.code ../../github.com/nytimes/gziphandler/gzip.go /^type GzipResponseWriter/,/^}/
+
+.code ../../github.com/nytimes/gziphandler/gzip.go /^func \(gzw/,/^}/
+
+- `ResponseWriter` is replaced with `GzipResponseWriter`
+- GZipMiddleware: Same `http.Handler` interface but new functionality.
+
+
+* Negroni Middlewares (1)
+- Library to manage middlewares
+
+.code ../../github.com/codegangsta/negroni/logger.go /^func NewLogger/,/^}/
+.code ../../github.com/codegangsta/negroni/logger.go /^func \(l \*Logger\)/,/^}/
+
+* Negroni Middlewares (2)
+- Support for `net/http` Handlers
+.code examples/negronimiddleware/negronimiddleware.go /^func main/,/^}/
+
+
+* Request Context
+
+How to pass data across middlewares?
+
+- Global context
+- Per-request var, using custom signature
+
+* gorilla/context
+.code examples/gorillacontext/gorillacontext.go /^func UserMiddleware/,/\/\/END/
+- Requires type assertion
+- http.Handler compliancy
+- Needs a cleaning middlware
+
+* goji
+.code examples/gojimiddleware/gojimiddleware.go /^func UserMiddleware/,/\/\/END/
+- No Lock required
+- Type assertion still required
+- Extended http.Handler interface
+
+* Testing
+
+Just use the `net/http/httptest` package
+
+Unit Testing
+
+- httptest.ResponseRecorder
+
+Integration Tests
+
+- httptest.Server
+
+* Unit Testing
+.code examples/test/helloweb_test.go
+
+* Integration Tests
+.code examples/test/helloweb_server_test.go /^func TestServer/,/^}/
+
+#* Application Context
+#
+#- Global vars
+#- Dependency Injection
+#- Method functions
+
+#* Global vars
+
+#    var (
+#        db = db.Qualcosa
+#        logger = log.Logging
+#        redis = redis.redis
+#    )
+
+#Then
+
+#    func HandleSomething(w http.ResponseWriter, r *http.Request) {
+#        // access db
+#        // access redis
+#        // access logger
+#    }
+
+#* Dependency Injection
+
+#    func main() {
+#        db := db.Qualcosa
+#        logger := log.Logging
+#        redis := redis.redis
+
+#        http.HandleFunc('/login', GetLoginHandler(db, logger, redis))
+#    }
+
+#    func GetLoginHandler(dbIface, logIface, redisIface) HandlerFunc {
+#        return func(w http.ResponseWriter, r *http.Request) {
+#            // access db
+#            // access redis
+#            // access logger
+#        }
+#    }
+
+#* Method functions
+
+#    type AppContext struct {
+#        db dbType,
+#        logger loggerType,
+#        redis redisType
+#    }
+
+#    func (ctx *AppContext) Login(w http.ResponseWriter, r *http.Request) {
+#        // access ctx.db
+#        // access ctx.logger
+#        // access ctx.redis
+#    }
+
+#    func main() {
+#        app := &AppContext{db, logger, redis}
+
+#        http.HandleFunc('/', HandlerFunc(app.Login))
+#    }
+
+#    // Or maybe just a mix of Method functions and Dependency Injection ??
+
+* References
+- [[https://godoc.org]]
+- [[http://elithrar.github.io/article/map-string-interface/]]
+- [[http://www.alexedwards.net/blog/a-recap-of-request-handling]]
+- [[http://go-talks.appspot.com/github.com/matryer/golanguk/building-apis.slide]]
+- [[http://www.alexedwards.net/blog/making-and-using-middleware]]
+- [[http://www.alexedwards.net/blog/a-mux-showdown]]
+- [[https://github.com/reedr/reedr/blob/master/slides/efsf2012-whatsapp-scaling.pdf]]
+
+
+#.code x.go /^func main/,/^}/
+#.play y.go
+#.image image.jpg
+#.iframe http://foo
+#.link http://foo label
+#.html file.html
+#.caption _Gopher_ by [[http://www.reneefrench.com][Renée French]]
