@@ -166,9 +166,7 @@ Methods
 
 Link to [[https://golang.org/src/net/http/server.go#L1883][Serve]] method
 
-* Example (official version)
-
-From [[https://godoc.org/net/http#ListenAndServe]]
+* Example (real world version)
 
     package main
 
