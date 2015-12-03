@@ -201,26 +201,27 @@ Thanks to
 
 - pat - Sinatra style pattern muxer for Go’s net/http library, by the author of Sinatra.
 - httprouter - A high performance router. Use this and the standard http handlers to form a very high performance web framework.
+- Bone - Lightning Fast HTTP Multiplexer.
+
 - Gorilla - Gorilla is a web toolkit for the Go programming language.
 - Goji - Goji is a minimalistic web framework for Golang that's high in antioxidants.
 - gocraft/web - A mux and middleware package in Go.
-- Bone - Lightning Fast HTTP Multiplexer.
-- ...
+
 
 * Some web microframeworks and libraries (2)
 
-- zeus - A very simple and fast HTTP router for Go.
-- Echo - A fast HTTP router (zero memory allocation) and micro web framework in Go.
 - go-json-rest - A quick and easy way to setup a RESTful JSON API
 - go-relax - A framework of pluggable components to build RESTful API's
 - go-rest - A small and evil REST framework for Go
+
+- zeus - A very simple and fast HTTP router for Go.
+- Echo - A fast HTTP router (zero memory allocation) and micro web framework in Go.
 - Gin - Gin is a web framework written in Go! It features a martini-like API with much better performance, up to 40 times faster.
-- ...
 
 * Some Web Microframeworks for Go (3)
 
-- [[https://github.com/avelino/awesome-go#web-frameworks][Full List 1]]
-- [[https://go.zeef.com/zeefcom][Full List 2]]
+- [[https://github.com/avelino/awesome-go#web-frameworks]]
+- [[https://go.zeef.com/zeefcom]]
 - ...
 
 * Microframeworks
