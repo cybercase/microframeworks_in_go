@@ -15,19 +15,19 @@ http://stefano.brilli.me
 - Write code for [[https://it.linkedin.com/in/stefano-brilli-95365021][living]]
 - Write code for [[https://github.com/cybercase][fun]]
 
-* About this talk
+#* About this talk
 
 
-* Intro
+#* Intro
+#
+#- Started Go-ing just before 1.4 was released.
+#- At the time I was in charge of a new Python/Django project.
+#- Concerned about scaling the web API.
+#- Decided to explore other languages/solutions.
+#- Was about to jump into Erlang.
+#- Eventually I went for Go.
 
-- Started Go-ing just before 1.4 was released.
-- At the time I was in charge of a new Python/Django project.
-- Concerned about scaling the web API.
-- Decided to explore other languages/solutions.
-- Was about to jump into Erlang.
-- Eventually I went for Go.
-
-So I'm here to share my learnings.
+#So I'm here to share my learnings.
 
 # So the point of this talk is to share my learning.
 
@@ -44,12 +44,12 @@ So I'm here to share my learnings.
 #- Was about to start learning Erlang (Whatsapp was just acquired from FB and I heard the story about 2M simultaneous connections [http://www.erlang-factory.com/upload/presentations/558/efsf2012-whatsapp-scaling.pdf])
 #- Then I found go
 
-* So, what's the topic?
+* About this talk
 
 Overview of Web Programming in Go.
 
 - The *net/http* package.
-- Microframeworks and libraries
+- Microframeworks and libraries.
 - Testing.
 
 #* ... And what's not
