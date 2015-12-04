@@ -21,6 +21,6 @@ func Hello(w http.ResponseWriter, r *http.Request) {
 
 func main() {
 	r := http.NewServeMux()
-	r.Handle("/hello", MyMiddleware(http.HandlerFunc(Hello)))
+	r.Handle("/hello", UserMiddleware(http.HandlerFunc(Hello)))
 	http.ListenAndServe(":8000", context.ClearHandler(r))
 } //END

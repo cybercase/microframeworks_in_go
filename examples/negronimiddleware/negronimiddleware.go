@@ -15,7 +15,7 @@ func main() {
 	m := http.NewServeMux() // Standard mux
 	m.HandleFunc("/", Hello)
 
-	n := negroni.New(negroni.Recovery(), negroni.NewLogger(), negroni.Static())
+	n := negroni.New(negroni.NewRecovery(), negroni.NewLogger(), negroni.NewStatic(http.Dir("/")))
 	n.UseHandler(m)
 
 	http.ListenAndServe(":8000", n)
